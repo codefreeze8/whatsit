@@ -1,2 +1,2 @@
-# whatsit
+# WhatsThat?
 Chat Application
