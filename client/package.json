@@ -9,6 +9,8 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.11.2",
+    "bootstrap": "^4.3.1",
     "gentelella": "^1.4.0"
   }
 }

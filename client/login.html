@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOC TYPE html>
 <html lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -8,92 +8,154 @@
 
     <title>Chat Login</title>
 
-    <!-- Bootstrap -->
-    <link href="node_modules/gentelella/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link href="node_modules/gentelella/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <!-- Animate.css -->
+    <!-- <link href="node_modules/gentelella/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- <link href="node_modules/gentelella/vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet"> -->
+    <link href="node_modules/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="node_modules/gentelella/vendors/animate.css/animate.min.css" rel="stylesheet">
 
-    <!-- Custom Theme Style -->
     <link href="node_modules/gentelella/build/css/custom.min.css" rel="stylesheet">
+    <style>
+        BODY { margin: 30px; }
+        LI > A { width: 100% }
+    </style>
   </head>
 
   <body class="login">
-    <div>
-      <a class="hiddenanchor" id="signup"></a>
-      <a class="hiddenanchor" id="signin"></a>
+    <div class="login_wrapper">
+        <section id="loginForm" class="login_content animate form">
+        <form class="form-horizontal">            
+            <h1>WhatsIt Login</h1>
+            <div>
+                <input type="text" class="form-control form-control-lg" placeholder="Email" required />
+            </div>
+            <div>
+                <input type="password" class="form-control form-control-lg" placeholder="Password" required />
+            </div>
+            <div>
+                <button class="btn btn-lg btn-primary">Log in</button>
+            </div>
 
-      <div class="login_wrapper">
-        <div class="animate form login_form">
-          <section class="login_content">
-            <form>
-              <h1>WhatsIt Login</h1>
-              <div>
-                <input type="text" class="form-control" placeholder="email" required="" />
-              </div>
-              <div>
-                <input type="password" class="form-control" placeholder="Password" required="" />
-              </div>
-              <div>
-                <a class="btn btn-default submit" href="index.html">Log in</a>
-                <a class="reset_pass" href="#">Lost your password?</a>
-              </div>
+            <div class="clearfix"></div>
 
-              <div class="clearfix"></div>
-
-              <div class="separator">
+            <div class="separator">
                 <p class="change_link">New to site?
-                  <a href="#signup" class="to_register"> Create Account </a>
+                <a href="#" onClick="toggleRegister()" class="to_register"> Create Account </a>
                 </p>
+            </div>
+        </form>
+        </section>
 
-                <div class="clearfix"></div>
-                <br />
+        <section id="registerForm" class="login_content animate form">
+        <form class="form-horizontal">            
+            <h1>Create Account</h1>
 
-                <div>
-                  <h1><i class="fa fa-paw"></i> Gentelella Alela!</h1>
-                  <p>©2016 All Rights Reserved. Gentelella Alela! is a Bootstrap 3 template. Privacy and Terms</p>
+            <div id="wizard" class="form_wizard wizard_horizontal">
+                <ul class="wizard_steps">
+                    <li><a href="#step-1">
+                        <span class="step_no">1</span>
+                        <span class="step_descr">About You</span>
+                        </a></li>
+                    <li><a href="#step-2">
+                        <span class="step_no">2</span>
+                        <span class="step_descr">Photo</span>
+                        </a></li>
+                    <li>
+                    <a href="#step-3">
+                        <span class="step_no">3</span>
+                        <span class="step_descr">Complete</span>
+                        </a></li>
+                    <li>
+                </ul>
+            
+                <div id="step-1">
+                    <div class="form-group">
+                        <input id="name" type="text" class="form-control form-control-lg" placeholder="Name" required />
+                    </div>
+                    <div class="form-group">
+                        <input id="email" type="text" class="form-control form-control-lg" placeholder="Email" required />
+                    </div>
+                    <div class="form-group">
+                        <input id="password" type="text" class="form-control form-control-lg" placeholder="Password" required />
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-form-label text-bold col-3" for="birthday">Birthday</label>
+                        <input id="birthday" type="date" class="form-control form-control-lg col-9" placeholder="Date of Birth" required />
+                    </div>
                 </div>
-              </div>
-            </form>
-          </section>
-        </div>
 
-        <div id="register" class="animate form registration_form">
-          <section class="login_content">
-            <form>
-              <h1>Create Account</h1>
-              <div>
-                <input type="text" class="form-control" placeholder="Username" required="" />
-              </div>
-              <div>
-                <input type="email" class="form-control" placeholder="Email" required="" />
-              </div>
-              <div>
-                <input type="password" class="form-control" placeholder="Password" required="" />
-              </div>
-              <div>
-                <a class="btn btn-default submit" href="index.html">Submit</a>
-              </div>
+                <div id="step-2">
+                    <img src='assets/profile.png' class="img-fluid img-thumbnail">
+                    
+                    <input id='pic' type='file'>
+                    
+                </div>
 
-              <div class="clearfix"></div>
-
-              <div class="separator">
-                <p class="change_link">Already a member ?
-                  <a href="#signin" class="to_register"> Log in </a>
-                </p>
-
-                <div class="clearfix"></div>
-                <br />
-
-                <small>
-                  <a href='https://github.com/ColorlibHQ/gentelella' target=_blank><i class="fa fa-paw"></i> Build with Gentelella Alela!</a>
-                </small>
-              </div>
-            </form>
-          </section>
-        </div>
-      </div>
+                <div id="step-3">
+                    <i class="fas fa-cloud-upload-alt fa-9x"></i>                    <p>
+                    Sending
+                    </p>
+                </div>
+            </div>
+        </form>
+        </section>
     </div>
+    
+    <!-- footer -->
+    <div style='position: fixed; bottom: 10px; opacity: .5; padding-left: 50px;'>
+        <small>Bootstrap template used: <a href='https://colorlib.com/polygon/gentelella/index.html' target=_blank>Gentelella Alela!</a></small>
+    </div>
+
+<script src="node_modules/gentelella/vendors/jquery/dist/jquery.min.js"></script>
+<script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="node_modules/gentelella/vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js"></script>
+
+<script>
+function toggleRegister(){
+    console.log( `[toggleRegister] ${$('#registerForm').css('display')}`);
+    if( $('#registerForm').css('display')=='none' ){
+        console.log( `~ showing reg form` );
+        $('#registerForm').show();
+        $('#loginForm').hide();
+    } else {
+        console.log( `~ showing login form` );
+        $('#registerForm').hide();
+        $('#loginForm').show();
+    }
+}
+$(document).ready(function(){
+    // on load show login page
+    toggleRegister();
+
+    /* noticed gentelella had this 'smart-wizard', googled to figure out use */
+  function wizardStepChange(obj, context){
+    console.log( `stepChange step from: ${context.fromStep} toi: ${context.toStep}`, context ); //validateSteps( context );
+    if( !context.toStep )
+        console.log( `DONE step clicked on` );
+    return true;
+  }
+// Modified smartwizard for button order:
+// node_modules/gentelella/vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js:54
+//     elmActionBar.append($this.buttons.previous)
+//                 .append($this.buttons.next)
+//                 .append($this.buttons.finish);
+  $('#wizard').smartWizard({
+    selected: 0,  // Selected Step, 0 = first step   
+    keyNavigation: true, // Enable/Disable key navigation(left and right keys are used if enabled)
+    enableFinishButton: false, // makes finish button enabled always
+	hideButtonsOnDisabled: true, // when the previous/next/finish buttons are disabled, hide them instead
+    labelNext:`<button class='btn btn-lg btn-success'><i class="fas fa-arrow-right"></i></button>`, // label for Next button
+    labelPrevious:`<button class='btn btn-lg btn-secondary'><i class="fas fa-arrow-left"></i></button>`, // label for Previous button
+    labelFinish:`<button class='btn btn-primary'>Done</button>`,  // label for Finish button        
+    noForwardJumping:false,
+    onLeaveStep: wizardStepChange, // triggers when leaving a step
+    onFinish: wizardStepChange  // triggers when Finish button is clicked  
+    });
+    // added a cancel button to the wizard bar
+    $('.actionBar').prepend(`<button onClick='toggleRegister()' class='btn btn-sm btn-ghost-secondary text-secondary float-left'>Cancel</button>`)
+
+});
+</script>
   </body>
 </html>
