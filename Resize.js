@@ -9,7 +9,7 @@ class Resize {
     // folder relative to base path
     this.folder = path.join(__dirname, params.path);
     [ this.sizeX,this.sizeY ] = params.size.replace(' ','').split('x');
-    this.filename = params.f
+    this.filename = params.filename;
   }
   async save(buffer) {
     // operations see: http://sharp.pixelplumbing.com/en/stable/api-operation/#parameters_7
@@ -17,7 +17,7 @@ class Resize {
       .rotate() // uses EXIF to auto-rotate depending on phone orientation
       .resize(parseInt(this.sizeX), parseInt(this.sizeY), 
         { fit: sharp.fit.inside, withoutEnlargement: true })
-      .toFile( path.resolve(`${this.folder}/${this.filename}` );
+      .toFile( path.resolve(`${this.folder}/${this.filename}`) );
     
     return this.filename;
   }

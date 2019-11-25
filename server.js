@@ -63,25 +63,31 @@ app.post('/api/register', upload.single('pic'), async function (req, res) {
     // room, session are added when they login
   }
   const dbUser = await db.User.create( userData );
-
-  res.send( { status: 1, userData: userDataWithoutPassword(dbUser) } );
+  dbUser.password = "";
+  res.send( { status: 1, userData: dbUser } );
 });
 
 // login user if valid password, pass back the userId + room
 app.post('/api/login', async function (req, res) {
   console.log( `[GET login] check user valid`, req.body );
   let dbUser = await db.User.findOne({ email: req.body.email });
-  console.log( ` .. login user info returned: `, dbUser );
 
-  if( !passwordHash.verify( req.body.password, dbUser.password ) ){
+  if( !dbUser || !passwordHash.verify( req.body.password, dbUser.password ) ){
     console.log( `x sorry invalid password (${req.body.password}), failing.` );
-    res.status(401).send({ status: 0, error: "Invalid login, try again" });
+    return res.send({ status: 0, error: "Invalid login, try again" });
   }
   
   // add session to this user
-  dbUser = await db.User.updateOne({email: req.body.email}, {session: uuidv4()});
-  dbUser = userDataWithoutPassword(dbUser);
-  console.log( `~ added session (${dbUser.session}) to ${dbUser.email}` );
+  const session = uuidv4();
+  console.log( `* valid login attempt, generated session: ${session}` );
+  result = await db.User.updateOne({ _id: dbUser._id }, { session });
+  if( !result.ok ){
+    console.log( `x problem updating session for user, failing.` );
+    return res.send({ status: 0, error: "DB error, try later" });
+  }
+  // adjust user-info, add session, and clear password before passing back
+  dbUser.session = session;
+  dbUser.password = "";
 
   // get active chatroom participants (ie have a session too)
   const chatroom = dbUser.chatroom;
@@ -91,7 +97,7 @@ app.post('/api/login', async function (req, res) {
   // update everyone (else) with this new person
   io.sockets.emit('broadcast',`room:${chatroom}`, { action: 'joined', user: userRoomInfo(dbUser) });
   
-  res.send( { status: 1, userData: dbUser, chatroomUsers } );
+  return res.send( { status: 1, userData: dbUser, chatroomUsers } );
 });
 
 app.post('/api/chat', async function (req, res) {
@@ -103,7 +109,7 @@ app.post('/api/chat', async function (req, res) {
 app.get('/api/chatroom', async function (req, res) {
   // switch this users chatroom
   if( !req.params.session || req.params.session.length !== 32 ){
-    res.status(401).send({ status: 0, error: "Invalid session, login again" });
+    res.send({ status: 0, error: "Invalid session, login again" });
   }
 
   let dbUser = await db.User.updateOne({ session: req.params.session }, 
@@ -158,10 +164,6 @@ io.on('connection', function (socket) {
 
  
 // general functions used ----------------------
-function userDataWithoutPassword( user ){
-  delete user.password;
-  return user;
-}
 function userRoomInfo( user ){
   return { _id: user._id, user: user.name, thumbnail: user.thumbnail };
 }
