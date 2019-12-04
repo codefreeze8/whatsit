@@ -1,4 +1,89 @@
-$(".messages").animate({ scrollTop: $(document).height() }, "fast");
+$(document).ready(async function(){
+    // on load show login page
+    if( !localStorage.session )
+        location.href = "/login.html";
+    
+    const response = await $.post( '/api/chatroom/load', 
+        { chatroom: localStorage.chatroom || '', session: localStorage.session } );
+    console.log( 'response: ', response );
+
+    if( response.status==0 ){
+        console.log( `[api/chatroom/load] couldn't load, redirecting to login.` );
+        location.href = "/login.html"; 
+    }
+    
+    $('#user-thumbnail').attr('src', response.user.thumbnail || '' );
+    $('#user-thumbnail').attr('class',response.user.status );
+    $('#user-name').html( response.user.user );    
+    $('#user-tagline').val( response.user.tagline || '' );
+    $('#room-name').text( response.user.room );
+
+    const user_id = response.user._id;
+    localStorage._id = user_id;
+
+    $('#room-users').empty();
+    response.chatroomUsers.map( user => {
+        if( user._id!==user_id )
+        $('#room-users').append(`
+        <li class="contact">
+            <div class="wrap">
+                <span class="contact-status ${user.status}"></span>
+                <img src="${user.thumbnail}" alt="" />
+                <div class="meta">
+                    <p class="name">${user.name}</p>
+                    <p class="preview">${user.tagline}</p>
+                </div>
+            </div>
+        </li>
+        `) 
+        });
+
+    $('#room-log').empty();
+    response.chatLog.map( entry => {
+        $('#room-log').append(`
+        <li class="${(entry.user._id==user_id ? 'sent' : 'replies' )}">
+            <img src="${entry.user.thumbnail}" alt="" />
+            <p>${entry.message}</p>
+            ${entry.attached ? 
+                `<img class='attached-image' src='/assets/pics/${entry.attached}' />` : ''}
+        </li>
+        `);
+    });
+
+    $(".messages").animate({ scrollTop: $(document).height() }, "fast");
+});
+
+function messageFilePreview(){
+    inputFilePreview('#inputfile','#pic-preview');
+    $('#pic-preview').show();
+    // hide preview after 2s
+    setTimeout( ()=>{ $('#pic-preview').fadeOut(); }, 2000 );
+}
+
+async function sendMessage(event){
+    if( event ) event.preventDefault();
+
+    const response = await formSend('#messageData INPUT','/api/chatroom/message');
+    console.log( `[sendMessage] response=`, response );
+    if( response.status ){
+        const message = $('#message-input').val();
+        $('#message-input').val('');
+
+        $('#room-log').append(`
+        <li class="sent">
+            <img src="${response.user.thumbnail}" alt="" />
+            <p>${response.chatLog.message}</p>
+            ${response.chatLog.attached ? 
+            `<img class='attached-image' src='/assets/pics/${response.chatLog.attached}' />` : ''}
+        </li>
+        `);
+        console.log( `.. appended message, now scrolling` );
+        const msgDiv = document.querySelector(".messages");
+        msgDiv.scrollTop = msgDiv.scrollHeight;
+    };        
+}
+
+    
         
         $("#profile-img").click(function() {
             $("#status-options").toggleClass("active");
@@ -32,24 +117,11 @@ $(".messages").animate({ scrollTop: $(document).height() }, "fast");
             $("#status-options").removeClass("active");
         });
         
-        function newMessage() {
-            message = $(".message-input input").val();
-            if($.trim(message) == '') {
-                return false;
-            }
-            $('<li class="sent"><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));
-            $('.message-input input').val(null);
-            $('.contact.active .preview').html('<span>You: </span>' + message);
-            $(".messages").animate({ scrollTop: $(document).height() }, "fast");
-        };
-        
-        $('.submit').click(function() {
-            newMessage();
-        });
+       
         
         $(window).on('keydown', function(e) {
             if (e.which == 13) {
-            newMessage();
-            return false;
+                sendMessage();
+                return false;
             }
         });

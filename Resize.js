@@ -15,8 +15,7 @@ class Resize {
     // operations see: http://sharp.pixelplumbing.com/en/stable/api-operation/#parameters_7
     await sharp(buffer)
       .rotate() // uses EXIF to auto-rotate depending on phone orientation
-      .resize(parseInt(this.sizeX), parseInt(this.sizeY), 
-        { fit: sharp.fit.inside, withoutEnlargement: true })
+      .resize(parseInt(this.sizeX), parseInt(this.sizeY))
       .toFile( path.resolve(`${this.folder}/${this.filename}`) );
     
     return this.filename;
